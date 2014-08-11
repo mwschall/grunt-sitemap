@@ -31,7 +31,10 @@ module.exports = (grunt) ->
 		url += '/' unless url[-1..] is '/'
 
 		# Site root dir
-		root = path.normalize (@data.siteRoot or '.')
+		root = path
+			.normalize (@data.siteRoot or '.')
+			# normalize doesn't convert \ to / on Windows
+			.replace /\\/g, '/'
 
 		# Check a site root was set
 		rootWarnMess = 'No "siteRoot" parameter defined. Using current directory.'

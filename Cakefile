@@ -3,8 +3,11 @@ fs = require 'fs'
 {print} = require 'sys'
 {spawn} = require 'child_process'
 
+# child_process fails to spawn properly on Windows
+spawnCmd = if process.platform is "win32" then 'coffee.cmd' else 'coffee'
+
 build = (callback) ->
-  coffee = spawn 'coffee', ['-c', '-o', 'tasks', 'src']
+  coffee = spawn spawnCmd, ['-c', '-o', 'tasks', 'src']
   coffee.stderr.on 'data', (data) ->
     process.stderr.write data.toString()
   coffee.stdout.on 'data', (data) ->
@@ -16,7 +19,7 @@ task 'build', 'Build tasks/ from src/', ->
   build()
 
  task 'watch', 'Watch src/ for changes', ->
-    coffee = spawn 'coffee', ['-w', '-c', '-o', 'tasks', 'src']
+    coffee = spawn spawnCmd, ['-w', '-c', '-o', 'tasks', 'src']
     coffee.stderr.on 'data', (data) ->
       process.stderr.write data.toString()
     coffee.stdout.on 'data', (data) ->
