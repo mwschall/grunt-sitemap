@@ -48,10 +48,10 @@ module.exports = (grunt) ->
 		priority = (@data.priority or 0.5).toString()
 
 		# File pattern
-		pattern = this.data.pattern or path.join root, '/**/*.html'
+		pattern = @data.pattern or '**/*.html'
 		
 		# Glob root
-		files = grunt.file.expand pattern
+		files = grunt.file.expand { cwd: root }, pattern
 
 		# Remove root from path and prepend homepage url
 		files = _.map files, (file) ->
@@ -72,7 +72,7 @@ module.exports = (grunt) ->
 			fileStat.url = url + urlPath
 
 			# Get last modified time
-			mtime = (fs.statSync(file).mtime).getTime()
+			mtime = (fs.statSync(path.join(root, file)).mtime).getTime()
 
 			# Format mtime to ISO (same as +00:00)
 			fileStat.mtime = new Date(mtime).toISOString()
